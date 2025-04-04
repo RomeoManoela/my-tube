@@ -1,0 +1,4 @@
+yt-dlp>=2023.3.4
+Pillow>=9.0.0
+humanize>=4.0.0
+requests>=2.28.0
