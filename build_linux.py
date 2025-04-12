@@ -74,21 +74,6 @@ Description: {description}
     subprocess.run(["dpkg-deb", "--build", deb_root])
     print(f"Paquet Debian créé avec succès: {deb_root}.deb")
 
-    with open("INSTALLATION.md", "w") as f:
-        f.write(f"""# Installation de MyTube
-
-## Installation manuelle (ubuntu/debian)
-
-1. Téléchargez le fichier .deb depuis la [page des releases](https://github.com/RomeoManoela/my-tube/releases/tag/Youtube)
-2. Installez-le avec la commande:
-   ```
-   sudo dpkg -i {package_name}_{package_version}.deb
-   sudo apt-get install -f  # Pour résoudre les dépendances manquantes
-   ```
-""")
-    
-    print("Fichier d'instructions d'installation créé: INSTALLATION.md")
-    
 except Exception as e:
     print(f"Erreur lors de la création du paquet Debian: {e}")
     print("L'exécutable standard a été créé dans le dossier 'dist'")

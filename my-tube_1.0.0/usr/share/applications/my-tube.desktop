@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=MyTube
+Exec=/usr/bin/my-tube
+Icon=my-tube
+Type=Application
+Categories=Utility;AudioVideo;
+Comment=Téléchargeur de vidéos YouTube
