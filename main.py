@@ -9,85 +9,105 @@ import requests
 from io import BytesIO
 import re
 
-class ModernUI(ttk.Style):
+class UI(ttk.Style):
     def __init__(self):
         super().__init__()
         self.theme_use('clam')
 
-        # Couleurs
-        self.primary = "#4a6cd4"
-        self.secondary = "#f0f0f0"
-        self.accent = "#2c3e50"
-        self.success = "#27ae60"
-        self.warning = "#f39c12"
-        self.error = "#e74c3c"
+        self.primary = "#3a7bd5"        # Bleu plus profond
+        self.secondary = "#f5f7fa"      # Gris très clair
+        self.accent = "#2c3e50"         # Bleu foncé
+        self.success = "#2ecc71"        # Vert plus vif
+        self.warning = "#f39c12"        # Orange
+        self.error = "#e74c3c"          # Rouge
+        self.text_dark = "#2d3436"      # Presque noir
+        self.text_light = "#ecf0f1"     # Blanc cassé
 
-        # Configuration des styles
         self.configure('TFrame', background=self.secondary)
-        self.configure('TLabel', background=self.secondary, font=('Helvetica', 10))
-        self.configure('TButton', background=self.primary, foreground='white',
-                       font=('Helvetica', 10, 'bold'), borderwidth=0)
-        self.map('TButton', background=[('active', self.accent), ('disabled', '#a0a0a0')])
+        self.configure('TLabel', background=self.secondary, foreground=self.text_dark, font=('Helvetica', 10))
 
-        self.configure('Header.TLabel', font=('Helvetica', 16, 'bold'), foreground=self.accent)
-        self.configure('Status.TLabel', font=('Helvetica', 9), foreground='#555555')
+        self.configure('TButton',
+                      background=self.primary,
+                      foreground=self.text_light,
+                      font=('Helvetica', 10, 'bold'),
+                      borderwidth=0,
+                      padding=6)
+        self.map('TButton',
+                background=[('active', self.accent), ('disabled', '#a0a0a0')],
+                foreground=[('disabled', '#d0d0d0')])
 
-        # Style pour la barre de progression
-        self.configure('TProgressbar', background=self.success, troughcolor=self.secondary,
-                      borderwidth=0, thickness=10)
+        self.configure('Header.TLabel',
+                      font=('Helvetica', 18, 'bold'),
+                      foreground=self.accent,
+                      background=self.secondary)
 
-        # Style pour le Treeview
-        self.configure('Treeview', background='white', fieldbackground='white', font=('Helvetica', 9))
-        self.configure('Treeview.Heading', font=('Helvetica', 10, 'bold'), background=self.secondary)
-        self.map('Treeview', background=[('selected', self.primary)], foreground=[('selected', 'white')])
+        self.configure('Status.TLabel',
+                      font=('Helvetica', 9),
+                      foreground='#7f8c8d',
+                      background=self.secondary)
+
+        self.configure('TProgressbar',
+                      background=self.success,
+                      troughcolor=self.secondary,
+                      borderwidth=0,
+                      thickness=8)
+
+        self.configure('Treeview',
+                      background='white',
+                      fieldbackground='white',
+                      font=('Helvetica', 9),
+                      rowheight=25)
+
+        self.configure('Treeview.Heading',
+                      font=('Helvetica', 10, 'bold'),
+                      background=self.secondary,
+                      foreground=self.text_dark)
+
+        self.map('Treeview',
+                background=[('selected', self.primary)],
+                foreground=[('selected', self.text_light)])
 
 class YouTubeDownloaderApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("YouTube Downloader Pro")
+        self.root.title("my-tube")
         self.root.geometry("900x650")
         self.root.minsize(800, 600)
 
-        # Appliquer le style moderne
-        self.style = ModernUI()
+        self.root.configure(bg="#f5f7fa")
 
-        # Variables
+        self.style = UI()
+
         self.formats = []
         self.download_path = os.path.expanduser("~/Downloads")
         self.thumbnail_image = None
         self.video_info = None
 
-        # Création de l'interface
         self.create_ui()
 
     def create_ui(self):
-        # Frame principal
         main_frame = ttk.Frame(self.root)
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=15, pady=15)
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
 
-        # Titre
         header_frame = ttk.Frame(main_frame)
-        header_frame.pack(fill=tk.X, pady=(0, 15))
+        header_frame.pack(fill=tk.X, pady=(0, 20))
 
         ttk.Label(header_frame, text="YouTube Downloader Pro", style='Header.TLabel').pack(side=tk.LEFT)
 
-        # URL input avec icône
         url_frame = ttk.Frame(main_frame)
-        url_frame.pack(fill=tk.X, pady=(0, 10))
+        url_frame.pack(fill=tk.X, pady=(0, 15))
 
         ttk.Label(url_frame, text="URL de la vidéo:").pack(side=tk.LEFT)
 
         self.url_entry = ttk.Entry(url_frame, width=50, font=('Helvetica', 10))
-        self.url_entry.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
+        self.url_entry.pack(side=tk.LEFT, padx=8, fill=tk.X, expand=True)
 
         self.fetch_btn = ttk.Button(url_frame, text="Récupérer", command=self.fetch_formats)
         self.fetch_btn.pack(side=tk.LEFT, padx=5)
 
-        # Conteneur pour les informations de la vidéo
         self.info_frame = ttk.Frame(main_frame)
         self.info_frame.pack(fill=tk.X, pady=10)
 
-        # Miniature de la vidéo (à gauche)
         self.thumbnail_frame = ttk.Frame(self.info_frame, width=240, height=135)
         self.thumbnail_frame.pack(side=tk.LEFT, padx=(0, 10))
         self.thumbnail_frame.pack_propagate(False)
@@ -95,7 +115,6 @@ class YouTubeDownloaderApp:
         self.thumbnail_label = ttk.Label(self.thumbnail_frame)
         self.thumbnail_label.pack(fill=tk.BOTH, expand=True)
 
-        # Informations de la vidéo (à droite)
         video_details_frame = ttk.Frame(self.info_frame)
         video_details_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
@@ -108,15 +127,12 @@ class YouTubeDownloaderApp:
         ttk.Label(video_details_frame, textvariable=self.duration_var).pack(anchor=tk.W, pady=(5, 0))
         ttk.Label(video_details_frame, textvariable=self.channel_var).pack(anchor=tk.W)
 
-        # Cadre pour les formats disponibles
         formats_frame = ttk.LabelFrame(main_frame, text="Formats disponibles")
         formats_frame.pack(fill=tk.BOTH, expand=True, pady=10)
 
-        # Treeview pour les formats
         columns = ("id", "ext", "resolution", "fps", "filesize", "note")
         self.tree = ttk.Treeview(formats_frame, columns=columns, show="headings", selectmode="browse")
 
-        # Définir les en-têtes
         self.tree.heading("id", text="ID")
         self.tree.heading("ext", text="Format")
         self.tree.heading("resolution", text="Résolution")
@@ -124,7 +140,6 @@ class YouTubeDownloaderApp:
         self.tree.heading("filesize", text="Taille")
         self.tree.heading("note", text="Qualité")
 
-        # Définir la largeur des colonnes
         self.tree.column("id", width=60, anchor=tk.CENTER)
         self.tree.column("ext", width=80, anchor=tk.CENTER)
         self.tree.column("resolution", width=100, anchor=tk.CENTER)
@@ -132,22 +147,17 @@ class YouTubeDownloaderApp:
         self.tree.column("filesize", width=100, anchor=tk.CENTER)
         self.tree.column("note", width=150)
 
-        # Ajouter une barre de défilement
         scrollbar = ttk.Scrollbar(formats_frame, orient=tk.VERTICAL, command=self.tree.yview)
         self.tree.configure(yscroll=scrollbar.set)
 
-        # Placer l'arbre et la barre de défilement
         self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Double-clic pour télécharger
         self.tree.bind("<Double-1>", lambda e: self.download_selected())
 
-        # Cadre pour les options de téléchargement
         download_options_frame = ttk.Frame(main_frame)
         download_options_frame.pack(fill=tk.X, pady=(10, 5))
 
-        # Bouton pour choisir le dossier de destination
         folder_btn = ttk.Button(download_options_frame, text="Dossier de destination",
                                command=self.choose_directory)
         folder_btn.pack(side=tk.LEFT)
@@ -157,12 +167,10 @@ class YouTubeDownloaderApp:
                                 style='Status.TLabel')
         folder_label.pack(side=tk.LEFT, padx=10)
 
-        # Bouton de téléchargement
         self.download_btn = ttk.Button(download_options_frame, text="Télécharger",
                                       command=self.download_selected)
         self.download_btn.pack(side=tk.RIGHT)
 
-        # Barre de progression
         progress_frame = ttk.Frame(main_frame)
         progress_frame.pack(fill=tk.X, pady=5)
 
@@ -170,7 +178,6 @@ class YouTubeDownloaderApp:
         self.progress = ttk.Progressbar(progress_frame, variable=self.progress_var, maximum=100)
         self.progress.pack(fill=tk.X)
 
-        # Étiquette d'état
         status_frame = ttk.Frame(main_frame)
         status_frame.pack(fill=tk.X)
 
@@ -179,8 +186,7 @@ class YouTubeDownloaderApp:
         self.status_label = ttk.Label(status_frame, textvariable=self.status_var, style='Status.TLabel')
         self.status_label.pack(anchor=tk.W)
 
-        # Initialiser l'interface
-        self.info_frame.pack_forget()  # Cacher le cadre d'info jusqu'à ce qu'une vidéo soit chargée
+        self.info_frame.pack_forget()
 
     def choose_directory(self):
         """Permet à l'utilisateur de choisir un dossier de destination"""
@@ -204,11 +210,9 @@ class YouTubeDownloaderApp:
         self.status_var.set("Récupération des informations...")
         self.fetch_btn.config(state=tk.DISABLED)
 
-        # Effacer les éléments existants
         for item in self.tree.get_children():
             self.tree.delete(item)
 
-        # Exécuter dans un thread séparé pour éviter de bloquer l'interface
         threading.Thread(target=self._fetch_formats_thread, args=(url,), daemon=True).start()
 
     def _fetch_formats_thread(self, url):
@@ -218,7 +222,6 @@ class YouTubeDownloaderApp:
                 self.video_info = ydl.extract_info(url, download=False)
                 self.formats = self.video_info.get('formats', [])
 
-                # Mettre à jour l'interface dans le thread principal
                 self.root.after(0, self._update_video_info)
                 self.root.after(0, self._update_formats_list)
         except Exception as e:
@@ -229,13 +232,10 @@ class YouTubeDownloaderApp:
         if not self.video_info:
             return
 
-        # Afficher le cadre d'informations
         self.info_frame.pack(fill=tk.X, pady=10, after=self.url_entry.master)
 
-        # Mettre à jour les informations textuelles
         self.title_var.set(self.video_info.get('title', 'Titre inconnu'))
 
-        # Formater la durée
         duration_secs = self.video_info.get('duration', 0)
         mins, secs = divmod(duration_secs, 60)
         hours, mins = divmod(mins, 60)
@@ -245,10 +245,8 @@ class YouTubeDownloaderApp:
             duration_str = f"Durée: {mins}m {secs}s"
         self.duration_var.set(duration_str)
 
-        # Informations sur la chaîne
         self.channel_var.set(f"Chaîne: {self.video_info.get('uploader', 'Inconnu')}")
 
-        # Charger la miniature
         threading.Thread(target=self._load_thumbnail, daemon=True).start()
 
     def _load_thumbnail(self):
@@ -269,7 +267,6 @@ class YouTubeDownloaderApp:
 
     def _update_formats_list(self):
         """Met à jour la liste des formats disponibles"""
-        # Trier les formats par résolution (qualité)
         sorted_formats = sorted(
             self.formats,
             key=lambda f: (
@@ -301,20 +298,16 @@ class YouTubeDownloaderApp:
             else:
                 fps = "N/A"
 
-            # Taille du fichier
             filesize = f.get('filesize')
             if filesize:
                 filesize = humanize.naturalsize(filesize)
             else:
                 filesize = "Inconnue"
 
-            # Note de qualité
             note = f.get('format_note', '')
 
-            # Ajouter à l'arbre
             item_id = self.tree.insert("", tk.END, values=(format_id, ext, resolution, fps, filesize, note))
 
-            # Mettre en évidence les formats recommandés
             if 'best' in note.lower() or ('1080p' in resolution and 'mp4' in ext):
                 self.tree.selection_set(item_id)
                 self.tree.see(item_id)
@@ -343,7 +336,6 @@ class YouTubeDownloaderApp:
         self.fetch_btn.config(state=tk.DISABLED)
         self.progress_var.set(0)
 
-        # Exécuter le téléchargement dans un thread séparé
         threading.Thread(target=self._download_thread, args=(url, format_id), daemon=True).start()
 
     def _download_thread(self, url, format_id):
@@ -375,7 +367,6 @@ class YouTubeDownloaderApp:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
 
-            # Mettre à jour l'interface dans le thread principal
             self.root.after(0, lambda: self._download_complete())
         except Exception as e:
             self.root.after(0, lambda: self._show_error(f"Erreur de téléchargement: {str(e)}"))
@@ -386,13 +377,11 @@ class YouTubeDownloaderApp:
         self.fetch_btn.config(state=tk.NORMAL)
         self.progress_var.set(100)
 
-        # Afficher un message de succès avec le chemin du fichier
         messagebox.showinfo(
             "Succès",
             f"Téléchargement terminé avec succès !\n\nLe fichier a été enregistré dans :\n{self.download_path}"
         )
 
-        # Ouvrir le dossier de destination
         if messagebox.askyesno("Ouvrir le dossier", "Voulez-vous ouvrir le dossier de destination ?"):
             os.startfile(self.download_path) if os.name == 'nt' else os.system(f'xdg-open "{self.download_path}"')
 
