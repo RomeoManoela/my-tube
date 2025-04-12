@@ -36,7 +36,7 @@ class YouTubeDownloaderApp:
         header_frame = ttk.Frame(main_frame)
         header_frame.pack(fill=tk.X, pady=(0, 20))
 
-        ttk.Label(header_frame, text="YouTube Downloader Pro", style='Header.TLabel').pack(side=tk.LEFT)
+        ttk.Label(header_frame, text="my-tube", style='Header.TLabel').pack(side=tk.LEFT)
 
         url_frame = ttk.Frame(main_frame)
         url_frame.pack(fill=tk.X, pady=(0, 15))
