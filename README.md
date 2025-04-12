@@ -12,30 +12,13 @@ Une application de desktop moderne et intuitive pour télécharger des vidéos Y
 - Barre de progression en temps réel avec informations de vitesse et temps restant
 - Sélection personnalisée du dossier de destination
 
-## Prérequis
-
-- Python 3.6 ou supérieur
-- Bibliothèques requises (voir section Installation)
-
 ## Installation
 
-1. Clonez ce dépôt :
-   ```
-   git clone https://github.com/RomeoManoela/my-tube.git
-   
-   cd my-tube
-   
-   python -m venv venv
-   
-   pip install -r requirements.txt
-   ```
+Dans INSTALLATION.md
 
 ## Utilisation
 
-Lancez l'application :
-```
-python main.py
-```
+LanCez l'application :
 
 1. Collez l'URL d'une vidéo YouTube dans le champ prévu
 2. Cliquez sur "Récupérer" pour obtenir les informations et formats disponibles
