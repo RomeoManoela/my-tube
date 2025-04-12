@@ -4,7 +4,7 @@ Une application de desktop moderne et intuitive pour télécharger des vidéos Y
 
 ## Fonctionnalités
 
-- Interface graphique moderne et conviviale
+- Interface graphique
 - Récupération des informations détaillées des vidéos YouTube
 - Affichage de la miniature, du titre, de la durée et du nom de la chaîne
 - Liste complète des formats disponibles avec leurs caractéristiques (résolution, FPS, taille)
