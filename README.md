@@ -23,7 +23,7 @@ Une application de desktop moderne et intuitive pour télécharger des vidéos Y
 
 ## Désinstallation
 
-Pour désinstaller MyTube de votre système, utilisez l'une des méthodes suivantes:
+Pour désinstaller my-tube de votre système, utilisez l'une des méthodes suivantes:
 
 ### Via la ligne de commande
 ```
