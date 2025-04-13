@@ -20,6 +20,7 @@ PyInstaller.__main__.run([
     '--onefile',
     '--icon=youtube.png',
     '--clean',
+    '--hidden-import=PIL._tkinter_finder',
 ])
 
 try:
